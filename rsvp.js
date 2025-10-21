@@ -1,17 +1,18 @@
-function ambilNamaDariURL() {
+// ...existing code...
+function getNameFromURL() {
     const urlParams = new URLSearchParams(window.location.search);
-    const nama = urlParams.get("untuk");
-    return nama;
+    const name = urlParams.get("untuk");
+    return name;
 }
 
-function gantiTeks() {
-    const nama = ambilNamaDariURL();
-    if (nama) {
-        document.getElementById("nama").textContent = nama;
+function replaceText() {
+    const name = getNameFromURL();
+    if (name) {
+        document.getElementById("nama").textContent = name;
     }
 }
 
-window.addEventListener("load", gantiTeks);
+window.addEventListener("load", replaceText);
 
 lightbox.option({
     'resizeDuration': 200,
@@ -61,13 +62,13 @@ $(document).ready(function () {
     $("#btn_message").on("click", function (e) {
         e.preventDefault();
         if ($("#guest_name").val() === '') {
-            return alert('Nama Harus Diisi')
+            return alert('Name is required');
         }
         if ($("#message").val() === '') {
-            return alert('Pesan Harus Diisi');
+            return alert('Message is required');
         }
         if ($("#guest_name").val() !== '' && $("#message").val() !== '') {
-            $(this).html('Mengirim Pesan...');
+            $(this).html('Sending message...');
             var btn = $(this);
             btn.attr("disabled", "disabled");
             setTimeout(function () {
@@ -80,12 +81,14 @@ $(document).ready(function () {
         event.preventDefault();
         var btn = $("#btn_message");
         if (true) {
-            btn.html('<small>Terima kasih atas doa dan ucapannya</small>');
+            btn.html('<small>Thank you for your prayers and wishes</small>');
             setTimeout(function () {
-                btn.html('Kirim');
+                btn.html('Send');
             }, 3000);
             var http = new XMLHttpRequest();
-            http.open("GET", "https://mycloud.devazy.iotflows.com/button?nama=" + $('#guest_name').val() + "&pesan=" + $('#message').val(), true);
+            var nameParam = encodeURIComponent($('#guest_name').val());
+            var msgParam = encodeURIComponent($('#message').val());
+            http.open("GET", "https://mycloud.devazy.iotflows.com/button?nama=" + nameParam + "&pesan=" + msgParam, true);
             http.send();
             $("#message_list").prepend('<li>\n' +
                 '                        <span class="from">' + $('#guest_name').val() + '</span>\n' +
@@ -93,6 +96,7 @@ $(document).ready(function () {
                 '                    </li>');
             $('#guest_name').val('');
             $('#message').val('');
+            btn.removeAttr("disabled");
         } else {
 
         }
@@ -102,7 +106,7 @@ $(document).ready(function () {
 function alert(msg) {
     alertify.alert().set(
         {
-            title: 'Informasi',
+            title: 'Information',
             transition: 'slide',
             message: msg,
             movable: true,
